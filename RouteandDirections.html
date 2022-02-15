@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>ArcGIS API for JavaScript Tutorials: Route and Directions</title>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.22/"></script>
+    <script>
+        require([
+        "esri/config",
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/Graphic",
+        "esri/rest/route",
+        "esri/rest/support/RouteParameters",
+        "esri/rest/support/FeatureSet"
+        ], function (esriConfig,Map, MapView, Graphic, route, RouteParameters, FeatureSet) {
+    
+        esriConfig.apiKey = "AAPK5b5135fc25634123ae37a60363063dcf2EeD6-k1KzMDTympt1wXLKC4yNsbSt_AdGlv6zzIf_5Ww2d5vr91u_x9qeBdg2a8";
+        const map = new Map({
+         basemap: "arcgis-navigation" // Basemap layer
+        });
+    
+        const view = new MapView({
+          map: map,
+          center: [-118.24532,34.05398], //Longitude, latitude
+          zoom: 12,
+          container: "viewDiv" // Div element
+           });
+        
+        const routeUrl = "https://route-api.arcgis.com/arcgis/rest/services/World/Route/NAServer/Route_World";
+
+        view.on("click", function(event){
+            
+        if (view.graphics.length === 0) {
+        addGraphic("origin", event.mapPoint);
+        } else if (view.graphics.length === 1) {
+        addGraphic("destination", event.mapPoint);
+
+        } else {
+        view.graphics.removeAll();
+        addGraphic("origin",event.mapPoint);
+         }
+         });
+
+        function addGraphic(type, point) {
+        const graphic = new Graphic({
+        symbol: {
+          type: "simple-marker",
+          color: (type === "origin") ? "white" : "black",
+          size: "8px"
+        },
+        geometry: point
+         });
+        view.graphics.add(graphic);
+        }
+
+        });
+    </script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
